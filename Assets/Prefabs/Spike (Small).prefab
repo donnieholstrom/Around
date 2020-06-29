@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3357830304408350524}
   m_Layer: 12
   m_Name: Spike (Small)
-  m_TagString: Untagged
+  m_TagString: Hazard
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -135,7 +135,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7192404a9f8864d4cafc2633e7057a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialForce: {x: -0.3, y: -0.8}
+  burstParticles: {fileID: 7354725944875675149, guid: b96dbb704beac8a4eb9ff9c80b0b789d, type: 3}
+  darkRed: {r: 0.3773585, g: 0.12993948, b: 0.12993948, a: 0}
 --- !u!1 &6860341488387563500
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,3 +219,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3f8e1de603fb0f4b90cdaf0d0184763, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 1

@@ -6,6 +6,6 @@ public class Pivot : MonoBehaviour
     
     private void Update()
     {
-        transform.Rotate(new Vector3(0, 0, -rotationSpeed / 100));
+        transform.Rotate(new Vector3(0, 0, -rotationSpeed * Time.deltaTime));
     }
 }
