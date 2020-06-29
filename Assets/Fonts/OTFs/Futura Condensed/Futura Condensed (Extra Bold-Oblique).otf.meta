@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: a15ec82b4814fcc40b82e6d7ed3bc5d9
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Futura Std
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f07578fa4729ed34cb56725191703db9, type: 3}
+  - {fileID: 12800000, guid: 7124c9eb5e7961649b72a4ab138ccc8a, type: 3}
+  - {fileID: 12800000, guid: 70cbdbed72873ca4892ca3e6a171029f, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
