@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using Pixelplacement;
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -7,6 +9,10 @@ public class MenuManager : MonoBehaviour
     private HighscoreManager highscoreManager;
 
     public TextMeshProUGUI highscoreLabel;
+
+    public CanvasGroup overlay;
+
+    private bool starting;
 
     private void Awake()
     {
@@ -20,15 +26,30 @@ public class MenuManager : MonoBehaviour
 
     public void PushButton(string buttonType)
     {
+        if (starting)
+        {
+            return;
+        }
+
         switch (buttonType)
         {
             case "start":
-                SceneManager.LoadScene(2);
+                StartCoroutine(StartGame());
                 break;
 
             case "quit":
                 Application.Quit();
                 break;
         }
+    }
+
+    private IEnumerator StartGame()
+    {
+        Tween.CanvasGroupAlpha(overlay, 0f, 1f, 0.5f, 0f, null, Tween.LoopType.None, null, null, false);
+
+        starting = true;
+        yield return new WaitForSeconds(0.5f);
+
+        SceneManager.LoadScene(2);
     }
 }

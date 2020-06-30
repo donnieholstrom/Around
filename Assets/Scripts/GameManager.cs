@@ -1,6 +1,7 @@
-﻿using TMPro;
+﻿using Pixelplacement;
+using System.Collections;
+using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -11,9 +12,15 @@ public class GameManager : MonoBehaviour
     private int coinsCollected;
     private int totalScore;
 
+    public CanvasGroup overlay;
+
+    public GameObject countdownObject;
+    private TextMeshProUGUI countdownLabel;
+
     public TextMeshProUGUI cyclesLabel;
     public TextMeshProUGUI coinsLabel;
-    public TextMeshProUGUI scoreLabel;
+    public GameObject scoreObject;
+    private TextMeshProUGUI scoreLabel;
 
     public Pivot pivot;
 
@@ -25,7 +32,14 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        overlay.alpha = 1f;
+
+        Time.timeScale = 0f;
+
         highscoreManager = GameObject.FindGameObjectWithTag("HighscoreManager").GetComponent<HighscoreManager>();
+
+        countdownLabel = countdownObject.GetComponent<TextMeshProUGUI>();
+        scoreLabel = scoreObject.GetComponent<TextMeshProUGUI>();
 
         cyclesCompleted = 0;
         coinsCollected = 0;
@@ -33,6 +47,8 @@ public class GameManager : MonoBehaviour
 
         SpawnSpike(2);
         SpawnCoin(1);
+
+        StartCoroutine(StartGame());
     }
 
     private void Update()
@@ -99,12 +115,51 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private IEnumerator StartGame()
+    {
+        Tween.CanvasGroupAlpha(overlay, 1f, 0.25f, 0.75f, 0f, Tween.EaseIn, Tween.LoopType.None, null, null, false);
+        yield return new WaitForSecondsRealtime(0.75f);
+
+        countdownLabel.text = "3";
+        countdownObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(0.75f);
+        countdownObject.SetActive(false);
+        yield return new WaitForSecondsRealtime(0.25f);
+
+        countdownLabel.text = "2";
+        countdownObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(0.75f);
+        countdownObject.SetActive(false);
+        yield return new WaitForSecondsRealtime(0.25f);
+
+        countdownLabel.text = "1";
+        countdownObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(0.75f);
+        countdownObject.SetActive(false);
+        Tween.CanvasGroupAlpha(overlay, 0.25f, 0f, 0.25f, 0f, Tween.EaseIn, Tween.LoopType.None, null, null, false);
+        yield return new WaitForSecondsRealtime(0.25f);
+
+        Time.timeScale = 1f;
+
+        countdownLabel.text = "GO";
+        countdownObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(0.25f);
+        countdownObject.SetActive(false);
+    }
+
     public void Lose()
     {
         if (totalScore > highscoreManager.highscore)
         {
             highscoreManager.highscore = totalScore;
         }
+
+        StartCoroutine(EndGame());
+    }
+
+    public IEnumerator EndGame()
+    {
+        yield return new WaitForSeconds(3f);
 
         SceneManager.LoadScene(1);
     }
