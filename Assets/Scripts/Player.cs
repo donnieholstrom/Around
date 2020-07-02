@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.SceneManagement;
 using Pixelplacement;
 
 public class Player : MonoBehaviour
@@ -19,6 +18,12 @@ public class Player : MonoBehaviour
     private Color startColor;
     public Color damageColor;
 
+    private AudioSource source;
+
+    public AudioClip damageSound;
+
+    public GameObject deathParticles;
+
     private void Awake()
     {
         gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
@@ -27,6 +32,8 @@ public class Player : MonoBehaviour
         playerRenderer = GetComponent<SpriteRenderer>();
 
         startColor = playerRenderer.color;
+
+        source = GetComponent<AudioSource>();
         
         health = 3;
     }
@@ -46,13 +53,23 @@ public class Player : MonoBehaviour
 
     public void Damage(int damage)
     {
+        DamageEffect(damage);
+
         if (damage >= health)
         {
+            healthBarSegment1.Deplete();
+
+            source.PlayOneShot(damageSound, 0.3f);
+
             gameManager.Lose();
+
+            Destroy(Instantiate(deathParticles, transform.position, Quaternion.identity), 2.9f);
+            Destroy(gameObject);
+
             return;
         }
 
-        DamageEffect(damage);
+        source.PlayOneShot(damageSound, 0.2f);
 
         switch (damage)
         {

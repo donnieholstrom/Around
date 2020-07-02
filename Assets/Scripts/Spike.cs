@@ -1,10 +1,14 @@
 ﻿using Pixelplacement;
+using System.Collections;
 using UnityEngine;
 
 public class Spike : MonoBehaviour
 {
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private AudioSource source;
+
+    public AudioClip thud;
 
     public GameObject burstParticles;
 
@@ -12,10 +16,15 @@ public class Spike : MonoBehaviour
 
     public Color darkRed = new Color(0.5f, 0, 0, 0);
 
+    private CameraShake cameraShake;
+
+    private bool justSpawned;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        source = GetComponent<AudioSource>();
 
         initialForce = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
 
@@ -23,6 +32,10 @@ public class Spike : MonoBehaviour
         Tween.Color(spriteRenderer, Color.clear, darkRed, 0.5f, 0f, Tween.EaseIn);
 
         Tween.Color(spriteRenderer, darkRed, Color.red, 0.25f, 1f);
+
+        cameraShake = Camera.main.GetComponent<CameraShake>();
+
+        StartCoroutine(JustSpawned());
     }
 
     private void Start()
@@ -34,5 +47,30 @@ public class Spike : MonoBehaviour
     {
         Destroy(Instantiate(burstParticles, transform.position, Quaternion.identity), 1f);
         Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (justSpawned)
+        {
+            return;
+        }
+
+        // checks if collision is on "Object Collision" layer
+
+        if (collision.gameObject.layer == 12)
+        {
+            cameraShake.Shake(0.1f);
+            source.PlayOneShot(thud, 0.3f);
+        }
+    }
+
+    private IEnumerator JustSpawned()
+    {
+        justSpawned = true;
+
+        yield return new WaitForSeconds(0.1f);
+
+        justSpawned = false;
     }
 }

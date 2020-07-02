@@ -134,4 +134,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e88135ba3b504c4eb84aa5b79d5b2c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  value: 1
   coinParticles: {fileID: 7354725944875675149, guid: 462214fab7ebcf14f8e6cffd01fee1d4, type: 3}
+  scoreText: {fileID: 6656417140081126092, guid: 18196e36f808838438db9b8678703923, type: 3}

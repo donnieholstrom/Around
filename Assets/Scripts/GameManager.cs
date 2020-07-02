@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    #region Variables
+
     private HighscoreManager highscoreManager;
 
     private int cyclesCompleted;
@@ -30,6 +32,19 @@ public class GameManager : MonoBehaviour
     private float timer = 0;
     private float scoreFrequency = 0.1f;
 
+    public AudioSource cycleSource;
+    public AudioSource coinSource;
+    public AudioSource damageSource;
+    public AudioClip cycleSound;
+    public AudioClip coinSound;
+    public AudioClip damageSound;
+
+    public GameObject cycleText;
+
+    private bool playing;
+
+    #endregion
+
     private void Awake()
     {
         overlay.alpha = 1f;
@@ -53,7 +68,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (timer >= scoreFrequency)
+        if (timer >= scoreFrequency && playing)
         {
             totalScore++;
             timer = 0;
@@ -71,7 +86,12 @@ public class GameManager : MonoBehaviour
             cyclesCompleted++;
             cyclesLabel.text = cyclesCompleted.ToString();
 
-            totalScore += 50;
+            Instantiate(cycleText, Vector3.up, Quaternion.identity);
+
+            cycleSource.pitch = 0.2f + (0.1f * cyclesCompleted);
+            cycleSource.PlayOneShot(cycleSound, 0.63f);
+
+            totalScore += 75;
 
             pivot.rotationSpeed *= 1.1f;
 
@@ -91,6 +111,8 @@ public class GameManager : MonoBehaviour
 
     public void CollectCoins(int amount)
     {
+        coinSource.PlayOneShot(coinSound, 0.75f);
+
         coinsCollected += amount;
         totalScore += amount * 50;
 
@@ -140,6 +162,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.25f);
 
         Time.timeScale = 1f;
+        playing = true;
 
         countdownLabel.text = "GO";
         countdownObject.SetActive(true);
@@ -149,6 +172,10 @@ public class GameManager : MonoBehaviour
 
     public void Lose()
     {
+        playing = false;
+
+        damageSource.PlayOneShot(damageSound, 0.6f);
+
         if (totalScore > highscoreManager.highscore)
         {
             highscoreManager.highscore = totalScore;
@@ -159,6 +186,8 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator EndGame()
     {
+        Tween.CanvasGroupAlpha(overlay, 0f, 1f, 2f, 1f, null, Tween.LoopType.None, null, null, false);
+
         yield return new WaitForSeconds(3f);
 
         SceneManager.LoadScene(1);

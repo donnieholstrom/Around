@@ -10,6 +10,7 @@ public class Coin : MonoBehaviour
     private bool justSpawned;
 
     public GameObject coinParticles;
+    public GameObject scoreText;
 
     private GameManager gameManager;
 
@@ -43,6 +44,8 @@ public class Coin : MonoBehaviour
         gameManager.CollectCoins(amount);
 
         Destroy(Instantiate(coinParticles, transform.position, Quaternion.identity), 1f);
+        Instantiate(scoreText, transform.position, Quaternion.identity);
+
         Destroy(gameObject);
     }
 
