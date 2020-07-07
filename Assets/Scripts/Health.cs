@@ -2,17 +2,17 @@
 using UnityEngine;
 using System.Collections;
 
-public class Coin : MonoBehaviour
+public class Health : MonoBehaviour
 {
     public int value = 1;
 
     private SpriteRenderer spriteRenderer;
     private bool justSpawned;
 
-    public GameObject coinParticles;
-    public GameObject scoreText;
+    public GameObject healthParticles;
+    public GameObject healthText;
 
-    private GameManager gameManager;
+    private Player player;
 
     [SerializeField]
     private float rotateRatio = 1f;
@@ -21,27 +21,27 @@ public class Coin : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
         Tween.LocalScale(transform, new Vector3(2f, 2f, 2f), Vector3.one, 0.5f, 0f, Tween.EaseIn);
-        Tween.Color(spriteRenderer, Color.clear, Color.yellow, 0.5f, 0f, Tween.EaseIn);
+        Tween.Color(spriteRenderer, Color.clear, spriteRenderer.color, 0.5f, 0f, Tween.EaseIn);
 
         StartCoroutine(JustSpawned());
     }
 
     private void Update()
     {
-        transform.Rotate(new Vector3(0, 0, 1f) * rotateRatio);
+        transform.Rotate(new Vector3(0, 0, 0.5f) * rotateRatio);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (justSpawned)
+        if (justSpawned || player.GetHealth() == 3)
         {
             return;
         }
 
-        if (collision.transform.CompareTag("Player") || collision.transform.CompareTag("Line"))
+        if (collision.transform.CompareTag("Line") || collision.transform.CompareTag("Player"))
         {
             Collect(value);
         }
@@ -49,10 +49,10 @@ public class Coin : MonoBehaviour
 
     public void Collect(int amount)
     {
-        gameManager.CollectCoins(amount);
+        player.GainHealth(amount);
 
-        Destroy(Instantiate(coinParticles, transform.position, Quaternion.identity), 1f);
-        Instantiate(scoreText, transform.position, Quaternion.identity);
+        Destroy(Instantiate(healthParticles, transform.position, Quaternion.identity), 1f);
+        Instantiate(healthText, transform.position, Quaternion.identity);
 
         Destroy(gameObject);
     }

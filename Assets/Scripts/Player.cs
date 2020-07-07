@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Pixelplacement;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
@@ -8,7 +9,9 @@ public class Player : MonoBehaviour
 
     public float speed;
 
+    [SerializeField]
     private int health;
+
     private SpriteRenderer playerRenderer;
 
     public HealthBarSegment healthBarSegment1;
@@ -21,6 +24,7 @@ public class Player : MonoBehaviour
     private AudioSource source;
 
     public AudioClip damageSound;
+    public AudioClip healthSound;
 
     public GameObject deathParticles;
 
@@ -36,6 +40,11 @@ public class Player : MonoBehaviour
         source = GetComponent<AudioSource>();
         
         health = 3;
+    }
+
+    public int GetHealth()
+    {
+        return health;
     }
 
     private void Update()
@@ -111,5 +120,54 @@ public class Player : MonoBehaviour
 
         Tween.Color(playerRenderer, damageColor, 0.07f, 0f, Tween.EaseIn);
         Tween.Color(playerRenderer, startColor, 0.07f, 0.07f, Tween.EaseOut);
+    }
+
+    public void GainHealth(int healing)
+    {
+        source.PlayOneShot(healthSound, 0.4f);
+
+        switch (healing)
+        {
+            case 2:
+                switch (health)
+                {
+                    case 1:
+                        healthBarSegment2.Refill();
+                        healthBarSegment3.Refill();
+
+                        health += healing;
+
+                        return;
+
+                    case 2:
+                        healthBarSegment3.Refill();
+
+                        health += healing;
+
+                        return;
+                }
+
+                return;
+
+            case 1:
+                switch (health)
+                {
+                    case 1:
+                        healthBarSegment2.Refill();
+
+                        health += healing;
+
+                        return;
+
+                    case 2:
+                        healthBarSegment3.Refill();
+
+                        health += healing;
+
+                        return;
+                }
+
+                return;
+        }
     }
 }

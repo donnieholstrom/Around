@@ -9,6 +9,8 @@ TagManager:
   - Coin
   - Hazard
   - HighscoreManager
+  - Health
+  - Boom
   layers:
   - Default
   - TransparentFX
@@ -28,7 +30,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Particle Collision
   - 
   - 
   - 

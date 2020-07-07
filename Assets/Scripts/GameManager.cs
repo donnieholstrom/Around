@@ -1,5 +1,6 @@
 ﻿using Pixelplacement;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,7 @@ public class GameManager : MonoBehaviour
     #region Variables
 
     private HighscoreManager highscoreManager;
+    private Player player;
 
     private int cyclesCompleted;
     private int coinsCollected;
@@ -28,6 +30,10 @@ public class GameManager : MonoBehaviour
 
     public GameObject spike;
     public GameObject coin;
+    public GameObject health;
+    public GameObject boom;
+
+    public List<GameObject> spawnedSpikes;
 
     private float timer = 0;
     private float scoreFrequency = 0.1f;
@@ -35,9 +41,11 @@ public class GameManager : MonoBehaviour
     public AudioSource cycleSource;
     public AudioSource coinSource;
     public AudioSource damageSource;
+    public AudioSource boomSource;
     public AudioClip cycleSound;
     public AudioClip coinSound;
     public AudioClip damageSound;
+    public AudioClip boomSound;
 
     public GameObject cycleText;
 
@@ -52,6 +60,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
 
         highscoreManager = GameObject.FindGameObjectWithTag("HighscoreManager").GetComponent<HighscoreManager>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
 
         countdownLabel = countdownObject.GetComponent<TextMeshProUGUI>();
         scoreLabel = scoreObject.GetComponent<TextMeshProUGUI>();
@@ -101,10 +110,21 @@ public class GameManager : MonoBehaviour
             {
                 SpawnSpike(1);
 
+                if (player.GetHealth() < 3)
+                {
+                    SpawnHealth(1);
+                }
+
                 if (cyclesCompleted >= 5)
                 {
                     SpawnSpike(1);
                 }
+            }
+
+            if (cyclesCompleted % 8 == 0)
+            {
+                SpawnBoom(1);
+                SpawnSpike(1);
             }
         }
     }
@@ -124,7 +144,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < amountToSpawn; i++)
         {
             Vector2 randomPoint = Random.insideUnitCircle ;
-            Instantiate(spike, new Vector3(randomPoint.x, randomPoint.y, 0), Quaternion.identity);
+            spawnedSpikes.Add(Instantiate(spike, new Vector3(randomPoint.x, randomPoint.y, 0), Quaternion.identity));
         }
     }
 
@@ -134,6 +154,24 @@ public class GameManager : MonoBehaviour
         {
             Vector2 randomPoint = Random.insideUnitCircle;
             Instantiate(coin, new Vector3(randomPoint.x, randomPoint.y, 0), Quaternion.identity);
+        }
+    }
+
+    public void SpawnHealth(int amountToSpawn)
+    {
+        for (int i = 0; i < amountToSpawn; i++)
+        {
+            Vector2 randomPoint = Random.insideUnitCircle;
+            Instantiate(health, new Vector3(randomPoint.x, randomPoint.y, 0), Quaternion.identity);
+        }
+    }
+
+    public void SpawnBoom(int amountToSpawn)
+    {
+        for (int i = 0; i < amountToSpawn; i++)
+        {
+            Vector2 randomPoint = Random.insideUnitCircle;
+            Instantiate(boom, new Vector3(randomPoint.x, randomPoint.y, 0), Quaternion.identity);
         }
     }
 
@@ -191,5 +229,19 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         SceneManager.LoadScene(1);
+    }
+
+    public void Boom()
+    {
+        boomSource.PlayOneShot(boomSound, 0.7f);
+
+        foreach (GameObject spike in spawnedSpikes)
+        {
+            spike.GetComponent<Spike>().Burst();
+        }
+
+        spawnedSpikes.Clear();
+
+        pivot.rotationSpeed = 42f;
     }
 }

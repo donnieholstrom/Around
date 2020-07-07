@@ -34,7 +34,7 @@ public class SpikeDamage : MonoBehaviour
             player.Damage(damage);
             didDamage = true;
 
-            spike.Burst();
+            spike.Die();
         }
     }
 

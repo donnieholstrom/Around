@@ -16,6 +16,7 @@ public class Spike : MonoBehaviour
 
     public Color darkRed = new Color(0.5f, 0, 0, 0);
 
+    private GameManager gameManager;
     private CameraShake cameraShake;
 
     private bool justSpawned;
@@ -34,6 +35,7 @@ public class Spike : MonoBehaviour
         Tween.Color(spriteRenderer, darkRed, Color.red, 0.25f, 1f);
 
         cameraShake = Camera.main.GetComponent<CameraShake>();
+        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
 
         StartCoroutine(JustSpawned());
     }
@@ -43,9 +45,19 @@ public class Spike : MonoBehaviour
         rb.AddForce(initialForce, ForceMode2D.Impulse);
     }
 
+    public void Die()
+    {
+        gameManager.spawnedSpikes.Remove(gameObject);
+
+        Destroy(Instantiate(burstParticles, transform.position, Quaternion.identity), 1f);
+
+        Destroy(gameObject);
+    }
+
     public void Burst()
     {
         Destroy(Instantiate(burstParticles, transform.position, Quaternion.identity), 1f);
+
         Destroy(gameObject);
     }
 
