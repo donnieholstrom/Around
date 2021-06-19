@@ -1,6 +1,7 @@
 ﻿using Pixelplacement;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Spike : MonoBehaviour
 {
@@ -20,6 +21,8 @@ public class Spike : MonoBehaviour
     private CameraShake cameraShake;
 
     private bool justSpawned;
+
+    public UnityEvent spikeHit;
 
     private void Awake()
     {

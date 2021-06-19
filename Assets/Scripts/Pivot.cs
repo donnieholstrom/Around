@@ -3,6 +3,7 @@
 public class Pivot : MonoBehaviour
 {
     public float rotationSpeed;
+    public bool flipped = false;
 
     private GameObject player;
 
@@ -20,6 +21,13 @@ public class Pivot : MonoBehaviour
 
         float modifier = Vector3.Distance(transform.position, player.transform.position);
 
-        transform.Rotate(new Vector3(0, 0, -rotationSpeed * Time.deltaTime * (1 / modifier)));
+        if (flipped)
+        {
+            transform.Rotate(new Vector3(0, 0, -rotationSpeed * Time.deltaTime * (modifier)));
+        }
+        else
+        {
+            transform.Rotate(new Vector3(0, 0, -rotationSpeed * Time.deltaTime * (1 / modifier)));
+        }
     }
 }
